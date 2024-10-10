@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoystickHelper", "JoystickHelper\JoystickHelper.csproj", "{9F38DD2E-7774-4585-A2DB-7ED24D968C60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoystickHelper.Tests", "JoystickHelper.Tests\JoystickHelper.Tests.csproj", "{644E1D58-BE7E-4842-B57C-E53B731C9FC5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F38DD2E-7774-4585-A2DB-7ED24D968C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F38DD2E-7774-4585-A2DB-7ED24D968C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F38DD2E-7774-4585-A2DB-7ED24D968C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F38DD2E-7774-4585-A2DB-7ED24D968C60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{644E1D58-BE7E-4842-B57C-E53B731C9FC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{644E1D58-BE7E-4842-B57C-E53B731C9FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{644E1D58-BE7E-4842-B57C-E53B731C9FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{644E1D58-BE7E-4842-B57C-E53B731C9FC5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JoystickHelper": {
+      "commandName": "Project",
+      "commandLineArgs": "ConfigureRyujinx"
+    }
+  }
+}
