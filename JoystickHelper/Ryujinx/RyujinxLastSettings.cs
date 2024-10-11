@@ -11,6 +11,6 @@ internal class RyujinxLastSettings
 
     internal IList<JoystickInfo> GetJoystickInfos()
     {
-        return SwappedJoysticks.Select(j => new JoystickInfo { SdlJoystickGuid = j.OldInputId }).ToList();
+        return SwappedJoysticks.Select(j => j.ToJoystickInfo()).Where(j => j != null).ToList();
     }
 }

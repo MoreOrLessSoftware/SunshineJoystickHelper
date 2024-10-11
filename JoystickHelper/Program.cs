@@ -40,8 +40,13 @@ public class Program
             var configJson = File.ReadAllText(context.ConfigPath);
             var joysticks = SdlHelper.GetConnectedJoysticks();
             var setResult = RyujinxConfigHelper.SetJoystickGuids(joysticks, configJson);
-            File.WriteAllText(context.ConfigPath, setResult.ModifiedConfigJson);
-            File.WriteAllText(context.LastSettingsPath, JsonSerializer.Serialize(new RyujinxLastSettings(setResult.SwappedJoysticks)));
+            if (!String.IsNullOrEmpty(setResult.ModifiedConfigJson))
+            {
+                File.WriteAllText(context.ConfigPath, setResult.ModifiedConfigJson);
+                File.WriteAllText(context.LastSettingsPath, JsonSerializer.Serialize(new RyujinxLastSettings(setResult.SwappedJoysticks)));
+
+                Log.Information("Ryujinx config file updated");
+            }
             return 0;
         }
         catch (Exception ex)
@@ -65,7 +70,12 @@ public class Program
             var configJson = File.ReadAllText(context.ConfigPath);
             var joysticks = context.GetLastSettings().GetJoystickInfos();
             var setResult = RyujinxConfigHelper.SetJoystickGuids(joysticks, configJson);
-            File.WriteAllText(context.ConfigPath, setResult.ModifiedConfigJson);
+            if (!String.IsNullOrEmpty(setResult.ModifiedConfigJson))
+            {
+                File.WriteAllText(context.ConfigPath, setResult.ModifiedConfigJson);
+
+                Log.Information("Ryujinx config file updated");
+            }
             return 0;
         }
         catch (Exception ex)

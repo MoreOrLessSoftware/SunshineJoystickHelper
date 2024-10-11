@@ -32,53 +32,73 @@ public class RyujinxConfigHelper
             throw new InvalidRyujinxConfigException("Failed to deserialize the Ryujinx config json", ex);
         }
 
-        Log.Information("Found {count} input configs in Ryujinx config file", inputConfigs.Count);
+        var inputConfigsToProcess = inputConfigs
+            .Where(c => c["backend"]?.ToString() == "GamepadSDL2")
+            .OrderBy(c => ParsePlayerIndex(c["player_index"]?.ToString()))
+            .ToList();
 
-        for (int i = 0; i < inputConfigs.Count; i++)
+        if (inputConfigsToProcess.Count == 0)
         {
-            var inputConfig = inputConfigs[i];
-            if (joysticks.Count - 1 >= i)
+            Log.Warning("No inputs configured with GamepadSDL2 backend type were found in Ryujinx");
+            return result;
+        }
+
+        Log.Information("Found {count} SDL2 inputs configured in Ryujinx", inputConfigsToProcess.Count);
+
+        var inputConfigModified = false;
+
+        for (var i = 0; i < inputConfigsToProcess.Count; i++)
+        {
+            var inputConfig = inputConfigsToProcess[i];
+            var playerIndex = inputConfig["player_index"]?.ToString();
+
+            if (i > joysticks.Count - 1)
             {
-                var oldId = inputConfig["id"]?.ToString();
-                var newId = $"{i}-{joysticks[i].SdlJoystickGuid}";
+                Log.Information("No connected joystick available to swap for {playerIndex}", playerIndex);
+                continue;
+            }
 
-                if (newId != oldId)
+            var oldId = inputConfig["id"]?.ToString();
+            var newId = $"{joysticks[i].SdlDeviceIndex}-{joysticks[i].SdlJoystickGuid}";
+
+            if (newId != oldId)
+            {
+                inputConfig["id"] = newId;
+                inputConfigModified = true;
+
+                if (IsValidRyujinxInputDeviceId(oldId))
                 {
-                    inputConfig["id"] = newId;
-
-                    if (IsValidRyujinxInputDeviceId(oldId))
-                    {
-                        result.SwappedJoysticks.Add(new SwappedJoystickResult { InputIndex = i, OldInputId = ConvertRyujinxInputDeviceIdToGuid(oldId) });
-                    }
-
-                    Log.Information("Swapped input #{index}: {oldId} >> {newId}", i, oldId, newId);
+                    result.SwappedJoysticks.Add(new SwappedJoystickResult { OldRyujinxDeviceId = oldId });
                 }
-                else
-                {
-                    Log.Information("No change needed for input #{index} ({oldId})", i, oldId);
-                }
+
+                Log.Information("Swapped input {playerIndex}: {oldId} >> {newId}", playerIndex, oldId, newId);
             }
             else
             {
-                Log.Information("No connected joystick available to swap for input #{index}", i);
+                Log.Information("No change needed for input {playerIndex} ({oldId})", playerIndex, oldId);
             }
         }
 
-        result.ModifiedConfigJson = JsonConvert.SerializeObject(configData, Formatting.Indented);
+        if (inputConfigModified)
+        {
+            result.ModifiedConfigJson = JsonConvert.SerializeObject(configData, Formatting.Indented);
+        }
 
         return result;
+    }
+
+    private static int ParsePlayerIndex(string? jsonValue)
+    {
+        if (String.IsNullOrEmpty(jsonValue) || !Regex.IsMatch(jsonValue, @"Player\d"))
+        {
+            throw new Exception($"PlayerIndex value did not match expected pattern: {jsonValue}");
+        }
+
+        return int.Parse(Regex.Match(jsonValue, @"Player(\d)").Groups[1].Value);
     }
 
     public static bool IsValidRyujinxInputDeviceId(string? deviceId)
     {
         return deviceId != null && Regex.IsMatch(deviceId, @"\d-.+");
-    }
-
-    public static Guid ConvertRyujinxInputDeviceIdToGuid(string value)
-    {
-        if (!RyujinxConfigHelper.IsValidRyujinxInputDeviceId(value))
-            throw new ArgumentException($"OldRyujinxInputId is not in the expected format: {value}");
-
-        return Guid.Parse(value.Substring(2));
     }
 }

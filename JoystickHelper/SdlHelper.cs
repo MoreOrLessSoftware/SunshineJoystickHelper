@@ -28,7 +28,7 @@ public static partial class SdlHelper
             }
             else
             {
-                joysticks.Add(new JoystickInfo { SdlJoystickGuid = SDL.SDL_JoystickGetGUID(joystick) });
+                joysticks.Add(new JoystickInfo { SdlJoystickGuid = SDL.SDL_JoystickGetGUID(joystick), SdlDeviceIndex = i });
             }   
         }
         
