@@ -36,9 +36,24 @@ After you're done streaming, revert the input IDs to what was configured prior t
 JoystickHelper.exe RevertRyujinx
 ```
 
+### Sample PowerShell Script Usage Example
+Here's a sample PowerShell script that will configure the joysticks in Ryujinx at launch, and then
+revert them back to their previous IDs when Ryujinx exits:
+```
+&"C:\JoystickHelper\JoystickHelper.exe" ConfigureRyujinx
+if ($LastExitCode -eq 1) {
+    Break
+}
+&"C:\Ryujinx\Ryujinx.exe"
+&"C:\JoystickHelper\JoystickHelper.exe" RevertRyujinx
+```
+> Be careful about when you run this script. If you run it as a Sunshine command, the gamepads may not
+yet be "connected" on the host when the stream starts and therefore won't be swapped. I've found it more reliable to use this
+script when launching Ryujinx from a launcher/frontend.
+
 ### Optional Configuration
 If your Ryujinx configuration file (`Config.json`) is not in the default `AppData\Ryujinx` location, you can tell
-JoystickHelper where to find it by setting it in the `settings.json` file, eg.:
+JoystickHelper where to find it by setting it in the `settings.json` file in the `JoystickHelper.exe` directory, eg.:
 ```
 {
   "RyujinxSettings": {
@@ -50,4 +65,3 @@ or by passing it on the command line:
 ```
 JoystickHelper.exe ConfigureRyujinx --ConfigPath "C:\\PathToRyujinxData\\Config.json"
 ```
-
